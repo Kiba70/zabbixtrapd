@@ -36,12 +36,12 @@ zabbixtrapd
     "zabbix_dc": {
         "config_psql": [
             {
-                "dbname": "database of DC",
+                "dbname": "database of zabbix_1",
                 "dbhost": "server1",
                 "dbport": "5432"
             },
             {
-                "dbname": "database of DC",
+                "dbname": "database of zabbix_1",
                 "dbhost": "server2",
                 "dbport": "5432"
             }
@@ -50,12 +50,12 @@ zabbixtrapd
     "zabbix_mc": {
         "config_psql": [
             {
-                "dbname": "database of MC",
+                "dbname": "database of zabbix_2",
                 "dbhost": "server1",
                 "dbport": "5432"
             },
             {
-                "dbname": "database of MC",
+                "dbname": "database of zabbix_2",
                 "dbhost": "server2",
                 "dbport": "5432"
             }
