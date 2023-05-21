@@ -33,7 +33,7 @@ zabbixtrapd
 настройки СУБД zabbix
 ```json
 {
-    "zabbix_dc": {
+    "zabbix_1": {
         "config_psql": [
             {
                 "dbname": "database of zabbix_1",
@@ -47,7 +47,7 @@ zabbixtrapd
             }
         ]
     },
-    "zabbix_mc": {
+    "zabbix_2": {
         "config_psql": [
             {
                 "dbname": "database of zabbix_2",
