@@ -33,29 +33,29 @@ zabbixtrapd
 настройки СУБД zabbix
 ```json
 {
-    "zabbix_dc": {
+    "zabbix_1": {
         "config_psql": [
             {
-                "dbname": "database of DC",
+                "dbname": "database of zabbix_1",
                 "dbhost": "server1",
                 "dbport": "5432"
             },
             {
-                "dbname": "database of DC",
+                "dbname": "database of zabbix_1",
                 "dbhost": "server2",
                 "dbport": "5432"
             }
         ]
     },
-    "zabbix_mc": {
+    "zabbix_2": {
         "config_psql": [
             {
-                "dbname": "database of MC",
+                "dbname": "database of zabbix_2",
                 "dbhost": "server1",
                 "dbport": "5432"
             },
             {
-                "dbname": "database of MC",
+                "dbname": "database of zabbix_2",
                 "dbhost": "server2",
                 "dbport": "5432"
             }
