@@ -127,10 +127,6 @@ func (d instanceZabbix) openPSQL(ctx context.Context, inst string) (*pgx.Conn, e
 	for _, i := range d.PSQL {
 		db, err = pgx.Connect(ctx,
 			fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", i.DBhost, i.DBuser, i.DBpassword, i.DBname, i.DBport))
-		// db, err = gorm.Open(postgres.New(postgres.Config{
-		// 	DSN:                  fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", i.DBhost, i.DBuser, i.DBpassword, i.DBname, i.DBport),
-		// 	PreferSimpleProtocol: true, // disables implicit prepared statement usage
-		// }), &gorm.Config{})
 		if err == nil {
 			return db, err
 		}
