@@ -12,12 +12,12 @@ import (
 )
 
 const (
-	instanceFile    = "/usr/local/etc/hwdb/instance.json"
-	credFile        = "/usr/local/etc/hwdb/cred.json"
+	instanceFile    = "/usr/local/etc/zabbixtrapd/instance.json"
+	credFile        = "/usr/local/etc/zabbixtrapd/cred.json"
 	logFile         = "/var/log/zabbixtrapd/zabbixtrapd.log"
-	fileNameOids    = "/usr/local/etc/hwdb/traps.txt"
-	fileNameVars    = "/usr/local/etc/hwdb/vars.txt"
-	fileNameCluster = "/usr/local/etc/hwdb/cluster.txt"
+	fileNameOids    = "/usr/local/etc/zabbixtrapd/traps.txt"
+	fileNameVars    = "/usr/local/etc/zabbixtrapd/vars.txt"
+	fileNameCluster = "/usr/local/etc/zabbixtrapd/cluster.txt"
 )
 
 var (

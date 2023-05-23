@@ -1,14 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 	"sync"
 	"time"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/jackc/pgx/v5"
 )
 
 const (
@@ -91,26 +91,21 @@ func (d *instancesZabbix) loadHostsFromDB(inst string, wg *sync.WaitGroup) {
 	d.RLock()
 	defer d.RUnlock()
 
-	db, err := d.i[inst].openPSQL(inst)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+
+	db, err := d.i[inst].openPSQL(ctx, inst)
 	if err != nil {
 		log.Printf("%+v\n", err)
 		return
 	}
+	defer db.Close(ctx) // Закрываем соединение с БД
 
-	sqlDB, err := db.DB() // Для ручного закрытия БД
-	if err != nil {
-		log.Println("ERROR:", inst, "getFromPSQL: error in db.DB()")
-		return
-	}
-
-	defer sqlDB.Close() // Закрываем соединение с БД
-
-	row, err := db.Raw(SQL).Rows()
+	row, err := db.Query(ctx, SQL)
 	if err != nil {
 		log.Println("ERROR:", inst, "getFromPSQL: error in db.Raw().Rows() SQL:", SQL)
 		return
 	}
-
 	defer row.Close()
 
 	var host, proxy, ip string
@@ -124,16 +119,18 @@ func (d *instancesZabbix) loadHostsFromDB(inst string, wg *sync.WaitGroup) {
 }
 
 // Создать connection to СУБД PSQL
-func (d instanceZabbix) openPSQL(inst string) (*gorm.DB, error) {
+func (d instanceZabbix) openPSQL(ctx context.Context, inst string) (*pgx.Conn, error) {
 
 	var err error
-	var db *gorm.DB
+	var db *pgx.Conn
 
 	for _, i := range d.PSQL {
-		db, err = gorm.Open(postgres.New(postgres.Config{
-			DSN:                  fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", i.DBhost, i.DBuser, i.DBpassword, i.DBname, i.DBport),
-			PreferSimpleProtocol: true, // disables implicit prepared statement usage
-		}), &gorm.Config{})
+		db, err = pgx.Connect(ctx,
+			fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", i.DBhost, i.DBuser, i.DBpassword, i.DBname, i.DBport))
+		// db, err = gorm.Open(postgres.New(postgres.Config{
+		// 	DSN:                  fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", i.DBhost, i.DBuser, i.DBpassword, i.DBname, i.DBport),
+		// 	PreferSimpleProtocol: true, // disables implicit prepared statement usage
+		// }), &gorm.Config{})
 		if err == nil {
 			return db, err
 		}
