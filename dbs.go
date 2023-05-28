@@ -103,7 +103,7 @@ func (d *instancesZabbix) loadHostsFromDB(inst string, wg *sync.WaitGroup) {
 
 	row, err := db.Query(ctx, SQL)
 	if err != nil {
-		log.Println("ERROR:", inst, "getFromPSQL: error in db.Raw().Rows() SQL:", SQL)
+		log.Println("ERROR:", inst, "getFromPSQL: error in db.Query() SQL:", SQL)
 		return
 	}
 	defer row.Close()

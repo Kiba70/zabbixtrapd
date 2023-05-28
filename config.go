@@ -16,7 +16,7 @@ import (
 
 const (
 	chBuffer        = 2048
-	configTimeSleep = 2
+	configTimeSleep = 60
 )
 
 var (
@@ -167,7 +167,9 @@ func (d *instancesZabbix) loadConfig() {
 		cert.pem = crd.CertPEM
 		cert.key = crd.CertKEY
 		cert.root = crd.CertROOT
-		servicePort = crd.ServicePort
+		if crd.ServicePort != "" { // Имеет значение по умолчанию
+			servicePort = crd.ServicePort
+		}
 		snmpv3_user = crd.SNMPv3_user
 		snmpv3_password = crd.SNMPv3_password
 		snmpv3_authtype = crd.SNMPv3_authtype

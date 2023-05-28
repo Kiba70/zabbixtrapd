@@ -23,10 +23,11 @@ const (
 
 var (
 	stats       statType
+	servicePort string    = "8880"
 	startTime   time.Time = time.Now()
 	cert        certType
 	cluster     clusterType
-	servicePort string = "8880"
+
 	// certPool  *x509.CertPool
 )
 
@@ -89,6 +90,17 @@ func stat() {
 	certs, err := tls.LoadX509KeyPair(cert.pem, cert.key)
 	if err != nil {
 		log.Println("Stat: certs:", cert.pem, cert.key, "error:", err.Error())
+
+		httpServer := &http.Server{
+			Addr:              ":" + servicePort,
+			Handler:           handler,
+			ReadHeaderTimeout: 2 * time.Second,
+			ReadTimeout:       2 * time.Second,
+			WriteTimeout:      5 * time.Second,
+			TLSConfig:         &tls.Config{},
+		}
+
+		log.Fatal(httpServer.ListenAndServe())
 	}
 
 	httpServer := &http.Server{
@@ -450,11 +462,12 @@ func status(w http.ResponseWriter, r *http.Request) {
 
 	workTime := time.Since(startTime).String()
 	stats.RLock()
+	defer stats.RUnlock()
 
 	// for _, z := range r.TLS.PeerCertificates {
-	// 	fmt.Println("Status: Subject:", z.DNSNames, z.Subject.String(), z.Subject.CommonName)
+	// 	log.Println("Status: Subject:", z.DNSNames, z.Subject.String(), z.Subject.CommonName)
 	// 	for _, i := range z.IPAddresses {
-	// 		fmt.Println("status: IP:", i.String())
+	// 		log.Println("status: IP:", i.String())
 	// 	}
 	// }
 
@@ -469,8 +482,6 @@ func status(w http.ResponseWriter, r *http.Request) {
 		UndeliveredTraps: stats.UndeliveredTraps,
 		Master:           cluster.master(),
 	})
-
-	stats.RUnlock()
 }
 
 func newProxy(w http.ResponseWriter, r *http.Request) {
